@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+#export JAVA_HOME=%java_home%
+#
+#export SPARK_MASTER_HOST=%spark_master_host%
+#export SPARK_MASTER_PORT=%spark_master_port%
+#export SPARK_WORKER_WEBUI_PORT=%spark_worker_webui_port%
+#export SPARK_WORKER_CORES=%spark_worker_cores%
+#export SPARK_WORKER_MEMORY=%spark_worker_memory%    # 1000m, 2g
+#export SPARK_DAEMON_MEMORY=%spark_worker_daemon_memory%    # 1000m, 2g
+#export SPARK_WORKER_OPTS="-Dspark.worker.cleanup.enabled=true"
+#
+export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url="$ZOOKEEPER_HOST" -Dspark.deploy.zookeeper.dir=/spark"
+
+#export SPARK_LOCAL_DIRS=xxx

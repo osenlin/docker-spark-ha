@@ -1,0 +1,80 @@
+version: '2'
+services:
+  master:
+    tty: true
+    image: docker.finogeeks.club/linzhihuang/spark:4.8
+    environment:
+      NODE_TYPE: master
+      # 在脚本内部设置
+      SPARK_MASTER_HOST: ${stack_name}-master-1
+      SPARK_MASTER_HOST_PRE: ${stack_name}-master-
+      SPARK_MASTER_PORT: ${master_port}
+      SPARK_MASTER_WEBUI_PORT: ${master_webui_port}
+      SPARK_MASTER_DAEMON_MEMORY: ${master_daemon_memory}
+      SPARK_MASTER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_DAEMON_JAVA_OPTS: -Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=${zookeeper_host} -Dspark.deploy.zookeeper.dir=/spark
+    #volumes:
+    #- /opt/spark/logs
+    ports:
+      - ${master_port}:${master_port}
+      - ${master_webui_port}:${master_webui_port}
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:host_label: spark.master=true
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+  worker:
+    tty: true
+    image: docker.finogeeks.club/linzhihuang/spark:4.8
+    depends_on:
+    - master
+    environment:
+      SPARK_MASTER_HOST: ${stack_name}-master-1
+      SPARK_MASTER_HOST_PRE: ${stack_name}-master-
+      SPARK_MASTER_PORT: ${master_port}
+      SPARK_WORKER_WEBUI_PORT: ${worker_webui_port}
+      SPARK_WORKER_CORES: ${worker_cores}
+      SPARK_WORKER_MEMORY: ${worker_memory}
+      SPARK_WORKER_DAEMON_MEMORY: ${worker_daemon_memory}
+      SPARK_MASTER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_DAEMON_JAVA_OPTS: -Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=${zookeeper_host}  -Dspark.deploy.zookeeper.dir=/spark
+    # volumes:
+    # - /opt/spark/logs
+    ports:
+    - ${master_port}:${master_port}
+    - ${worker_webui_port}:${worker_webui_port}
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:host_label: spark.worker=true
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+  client:
+    tty: true
+    image: docker.finogeeks.club/linzhihuang/spark:4.8
+    depends_on:
+    - master
+    environment:
+        NODE_TYPE: client
+        SPARK_MASTER_HOST: ${stack_name}-master-1
+        SPARK_MASTER_PORT: ${master_port}
+        SPARK_MASTER_WEBUI_PORT: ${master_webui_port}
+        SPARK_UI_PORT: ${client_app_port}
+        SPARK_MASTER_DAEMON_MEMORY: ${worker_daemon_memory}
+        HDFS_NAME_SERVICE: ${hdfs_name_service}
+        HDFS_STACK_NAME: ${hdfs_stack_name}
+        HDFS_REPLI_COUNT: ${hdfs_repli_count}
+        HIVE_METASTORE_SERVER_STACK: ${hive_metastore_server_stack}
+        HIVE_METASTORE_SERVER_PORT: ${hive_metastore_server_port}
+        SPARK_MASTER_OPTS: -Dspark.worker.cleanup.enabled=true
+        SPARK_DAEMON_JAVA_OPTS: -Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=${zookeeper_host}  -Dspark.deploy.zookeeper.dir=/spark
+    # volumes:
+    #volumes:
+    #- /opt/spark/logs
+    ports:
+    - ${client_sshd_port}:${client_sshd_port}
+    - ${client_app_port}:${client_app_port}
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:host_label: spark.client=true
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}

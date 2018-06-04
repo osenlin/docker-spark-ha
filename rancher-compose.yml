@@ -1,0 +1,128 @@
+.catalog:
+  name: "SPARK"
+  version: "1.0.3"
+  description: "spark ha cluster"
+  minimum_rancher_version: v1.2.0
+  questions:
+    - variable: "stack_name"
+      label: "Your stack name"
+      description: "STACK�??"
+      required: true
+      default: "spark-ha-online"
+      type: "string"
+    - variable: "master_port"
+      label: "Master port"
+      description: "指定master的端口，用于提交任务"
+      required: true
+      default: "17077"
+      type: "int"
+    - variable: "master_webui_port"
+      label: "Master web ui port"
+      description: "Master节点的web端口"
+      required: true
+      default: "18080"
+      type: "int"
+    - variable: "master_daemon_memory"
+      label: "Master daemon memory"
+      description: "Master进程自身内存，对应spark的配置：SPARK_DAEMON_MEMORY, e.g. 1000m/2g"
+      required: true
+      default: "1g"
+      type: "string"
+    - variable: "worker_scale"
+      label: "Worker nodes num"
+      description: "要部署的worker节点的个�??"
+      required: true
+      default: 2
+      type: "int"
+    - variable: "worker_webui_port"
+      label: "Worker web ui port"
+      description: "Worker节点的web端口"
+      required: true
+      default: "18081"
+      type: "int"
+    - variable: "worker_daemon_memory"
+      label: "Worker daemon memory"
+      description: "Worker进程自身内存，对应spark的配置：SPARK_DAEMON_MEMORY, e.g. 1000m/2g"
+      required: true
+      default: "2g"
+      type: "string"
+    - variable: "worker_cores"
+      label: "Worker cores number"
+      description: "Worker core个数，对应spark的配置：SPARK_WORKER_CORES, e.g. 4"
+      required: true
+      default: "8"
+      type: "int"
+    - variable: "worker_memory"
+      label: "Worker memory"
+      description: "Worker可分配内存，对应spark的配置：SPARK_WORKER_MEMORY, e.g. 1000m/2g"
+      required: true
+      default: "4g"
+      type: "string"
+    - variable: "client_number"
+      label: "Client number"
+      description: "提交作业的client个数"
+      required: true
+      default: "1"
+      type: "int"
+    - variable: "client_sshd_port"
+      label: "Client sshd service port"
+      description: "client container sshd服务端口"
+      required: true
+      default: "1022"
+      type: "int"
+    - variable: "client_app_port"
+      label: "Client spark app port"
+      description: "client app ui端口，对应spark的配置：spark.ui.port"
+      required: true
+      default: "14040"
+      type: "int"
+    - variable: "hdfs_stack_name"
+      description: "输入hdfs nn和snn的stack�??"
+      label: "hdfs stack name of nn&snn"
+      required: true
+      default: "hdfs"
+      type: "string"
+    - variable: "hdfs_name_service"
+      description: "输入hdfs集群的stack�??"
+      label: "hdfs service name"
+      required: true
+      default: "finogeeks"
+      type: "string"
+    - variable: "hdfs_repli_count"
+      description: "hdfs集群副本个数"
+      label: "hdfs replication count"
+      required: true
+      default: 2
+      type: "int"
+    - variable: "hive_metastore_server_stack"
+      description: "hive元数据库服务的stack�??"
+      label: "hive metaStore server stack name"
+      required: true
+      default: "hive"
+      type: "string"
+    - variable: "hive_metastore_server_port"
+      description: "hive元数据库服务的端�??"
+      label: "hive metaStore server port"
+      required: true
+      default: 10000
+      type: "int"
+    - variable: "master_scale"
+      description: "master个数，用于ha"
+      label: "spark nodes num"
+      require: true
+      default: 2
+      type: "int"
+    - variable: "zookeeper_host"
+      description: "zk broker list"
+      lable: "zookeeper host"
+      require: true
+      default: "10.135.187.135:52182,10.135.161.133:52182,10.135.18.9:52182"
+      type: "string"
+worker:
+  scale: ${worker_scale}
+  retain_ip: true
+master:
+  scale: ${master_scale}
+  retain_ip: true
+client:
+  scale: ${client_number}
