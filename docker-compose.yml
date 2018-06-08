@@ -2,10 +2,10 @@ version: '2'
 services:
   master:
     tty: true
-    image: docker.finogeeks.club/linzhihuang/spark:4.8
+    image: spark:4.8
     environment:
       NODE_TYPE: master
-      # ÔÚ½Å±¾ÄÚ²¿ÉèÖÃ
+      # ï¿½Ú½Å±ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
       SPARK_MASTER_HOST: ${stack_name}-master-1
       SPARK_MASTER_HOST_PRE: ${stack_name}-master-
       SPARK_MASTER_PORT: ${master_port}
@@ -25,7 +25,7 @@ services:
       io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
   worker:
     tty: true
-    image: docker.finogeeks.club/linzhihuang/spark:4.8
+    image: spark:4.8
     depends_on:
     - master
     environment:

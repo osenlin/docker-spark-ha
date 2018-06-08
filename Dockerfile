@@ -1,4 +1,4 @@
-FROM docker.finogeeks.club/base/java
+FROM base/java
 MAINTAINER linzhihuang "linzhihuang@finogeeks.com"
 
 ENV SERVICE_NAME=spark \
